@@ -91,12 +91,12 @@ jobs:
         run: |
           docker push ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/microservice:${{ github.sha }}
 
-      # Update Kubernetes YAML with new image tag
-      - name: Update Kubernetes YAML
-        run: |
-          sed -i "s|image: .*|image: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/microservice:${{ github.sha }}|" clusters/automatic-fortnight-cluster/microservice/deployment.yaml
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add clusters/automatic-fortnight-cluster/microservice/deployment.yaml
-          git commit -m "Update image to ${{ github.sha }}"
-          git push origin main
+      # Update Kubernetes YAML with new image tag TODO: enable when cluster is available
+    #   - name: Update Kubernetes YAML
+    #     run: |
+    #       sed -i "s|image: .*|image: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/microservice:${{ github.sha }}|" clusters/automatic-fortnight-cluster/microservice/deployment.yaml
+    #       git config --global user.name "GitHub Actions"
+    #       git config --global user.email "actions@github.com"
+    #       git add clusters/automatic-fortnight-cluster/microservice/deployment.yaml
+    #       git commit -m "Update image to ${{ github.sha }}"
+    #       git push origin main
