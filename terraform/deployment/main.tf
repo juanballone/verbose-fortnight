@@ -22,7 +22,7 @@ data "azurerm_container_registry" "acr" {
 data "azurerm_client_config" "current" {}
 
 module "kubernetes_baseline" {
-  source              = "../modules/kubernetes-baseline-configuration"
+  source              = "./modules/kubernetes-baseline-configuration"
   resource_group_name = data.azurerm_dns_zone.environment.resource_group_name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   subscription_id     = data.azurerm_client_config.current.subscription_id
