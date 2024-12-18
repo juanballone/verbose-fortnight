@@ -60,16 +60,6 @@ variable "environment_public_dns_zone_id" {
   type        = string
 }
 
-variable "environment_private_dns_zone_id" {
-  description = "The Resource ID of the Private DNS Zone for the environment. This is for the hosting of application endpoints."
-  type        = string
-}
-
-variable "environment_private_dns_zone_name" {
-  description = "The Name of the Private DNS Zone for the environment. This is for the hosting of application endpoints."
-  type        = string
-}
-
 variable "ampls_private_dns_zone_ids" {
   default     = []
   description = "A list of Resource IDs of the Private DNS Zone for AMPLS."

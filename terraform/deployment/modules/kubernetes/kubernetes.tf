@@ -75,12 +75,6 @@ resource "azurerm_role_assignment" "kubelet_dns_contributor" {
   principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
 }
 
-resource "azurerm_role_assignment" "kubelet_private_dns_contributor" {
-  scope                = var.environment_private_dns_zone_id
-  role_definition_name = "Private DNS Zone Contributor"
-  principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
-}
-
 resource "azurerm_role_assignment" "network_contributor" {
   scope                = azurerm_virtual_network.vnet.id
   role_definition_name = "Network Contributor"
