@@ -1,0 +1,112 @@
+name: CI Pipeline for Docker
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/*
+  push:
+    branches:
+      - main
+    paths:
+      - src/*
+      - .github/workflows/docker.yaml
+      
+jobs:
+  build-test:
+    runs-on: self-hosted
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Log in to Azure Container Registry
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          username: ${{ secrets.AZURE_ACR_USERNAME }}
+          password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
+      # Build the Docker image
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/microservice:${{ github.sha }} .
+        working-directory: ./src
+
+      # Run the Docker image in the runner and execute tests
+      - name: Run Docker Image
+        run: |
+          docker run -d --name microservice -p 3000:3000 ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/microservice:${{ github.sha }}
+          sleep 10 # Give the container time to start
+
+      - name: Test Application
+        run: |
+          RESPONSE=$(curl -s -f http://localhost:3000)
+          if [[ "$RESPONSE" == '{"message":"Hello, world!"}' ]]; then
+            echo "Application returned expected message: $RESPONSE"
+          else
+            echo "Unexpected response: $RESPONSE"
+            exit 1
+          fi
+
+      - name: Run Health Tests
+        run: |
+            RESPONSE=$(curl -s -f http://localhost:3000/health)
+            if [[ "$RESPONSE" == 'OK' ]]; then
+                echo "Application returned expected message: $RESPONSE"
+            else
+                echo "Unexpected response: $RESPONSE"
+                exit 1
+            fi
+  
+      - name: Run Version Test
+        run: |
+            RESPONSE=$(curl -s -f http://localhost:3000/version)
+            if [[ "$RESPONSE" == '{"version":"1.0.1"}' ]]; then
+                echo "Application returned expected message: $RESPONSE"
+            else
+                echo "Unexpected response: $RESPONSE"
+                exit 1
+            fi
+        
+      - name: Stop and Remove Container
+        if: always()
+        run: |
+            docker stop microservice || true
+            docker rm microservice || true
+
+  push-image:
+    runs-on: self-hosted
+    needs: build-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Log in to Azure Container Registry
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          username: ${{ secrets.AZURE_ACR_USERNAME }}
+          password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
+      # Push the Docker image to ACR
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/microservice:${{ github.sha }}
+
+      # Update Kubernetes YAML with new image tag
+      - name: Update Kubernetes YAML
+        run: |
+          sed -i "s|image: .*|image: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/microservice:${{ github.sha }}|" clusters/automatic-fortnight-cluster/microservice/deployment.yaml
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add clusters/automatic-fortnight-cluster/microservice/deployment.yaml
+          git commit -m "Update image to ${{ github.sha }}"
+          git push origin main
