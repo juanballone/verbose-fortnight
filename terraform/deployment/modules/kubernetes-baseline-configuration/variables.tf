@@ -9,12 +9,6 @@ variable "flux_git_repository_metadata_name" {
   type        = string
 }
 
-variable "flux_git_repository_url" {
-  default     = "ssh://git@github.com/juanballone/automatic-fortnight-deployment"
-  description = "The SSH URL for the git repository we want Flux to monitor for deployments."
-  type        = string
-}
-
 variable "tenant_id" {
   description = "The Tenant ID."
   type        = string
