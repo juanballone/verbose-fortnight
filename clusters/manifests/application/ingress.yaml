@@ -1,0 +1,28 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservice-ingress
+  namespace: microservice
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Use ClusterIssuer for cert-manager
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"      # Redirect HTTP to HTTPS
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"    # Optional: Increase upload limit
+    external-dns.alpha.kubernetes.io/hostname: microservice.dev.argentoriver.com
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - microservice.dev.argentoriver.com
+      secretName: microservice-tls  # TLS Secret managed by cert-manager
+  rules:
+    - host: microservice.dev.argentoriver.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: microservice-service  # Link to your ClusterIP Service
+                port:
+                  number: 80
