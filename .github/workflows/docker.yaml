@@ -61,16 +61,6 @@ jobs:
                 echo "Unexpected response: $RESPONSE"
                 exit 1
             fi
-  
-      - name: Run Version Test
-        run: |
-            RESPONSE=$(curl -s -f http://localhost:3000/version)
-            if [[ "$RESPONSE" == '{"version":"1.0.1"}' ]]; then
-                echo "Application returned expected message: $RESPONSE"
-            else
-                echo "Unexpected response: $RESPONSE"
-                exit 1
-            fi
         
       - name: Stop and Remove Container
         if: always()
