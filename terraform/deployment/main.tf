@@ -18,3 +18,15 @@ data "azurerm_container_registry" "acr" {
   name                = "acrautomaticfortnight"
   resource_group_name = "rg-global-deploy"
 }
+
+data "azurerm_client_config" "current" {}
+
+module "kubernetes_baseline" {
+  source              = "../modules/kubernetes-baseline-configuration"
+  resource_group_name = data.azurerm_dns_zone.environment.resource_group_name
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  subscription_id     = data.azurerm_client_config.current.subscription_id
+  domain_filter       = data.azurerm_dns_zone.environment.name
+  identity_client_id  = module.main.kubelet_identity_client_id
+  depends_on          = [module.main]
+}
