@@ -74,12 +74,6 @@ jobs:
             ARM_SUBSCRIPTION_ID: ${{ env.ARM_SUBSCRIPTION_ID }}
             ARM_TENANT_ID: ${{ env.ARM_TENANT_ID }}
 
-        # Manual Approval Step
-        - name: Wait for Manual Approval
-          uses: hmarr/auto-approve-action@v4
-          with:
-            review-message: "Please approve to continue to Terraform Apply."
-
         - name: Terraform Apply
           if: github.ref == 'refs/heads/main'
           run: terraform apply -auto-approve tfplan
