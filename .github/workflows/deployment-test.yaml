@@ -1,0 +1,34 @@
+name: Flux Deployment Completed
+
+on:
+  repository_dispatch:
+    types: [Kustomization/application-repo.flux-system]
+
+jobs:
+  run-tests:
+    name: Run Tests After Deployment
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Initial Test
+        run: |
+          RESPONSE=$(curl -s -f https://microservice.dev.argentoriver.com)
+          if [[ "$RESPONSE" == '{"message":"Hello, world!"}' ]]; then
+            echo "Application returned expected message: $RESPONSE"
+          else
+            echo "Unexpected response: $RESPONSE"
+            exit 1
+          fi
+
+      - name: Run Health Tests
+        run: |
+            RESPONSE=$(curl -s -f https://microservice.dev.argentoriver.com/health)
+            if [[ "$RESPONSE" == 'OK' ]]; then
+                echo "Application returned expected message: $RESPONSE"
+            else
+                echo "Unexpected response: $RESPONSE"
+                exit 1
+            fi
+
