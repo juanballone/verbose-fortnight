@@ -31,4 +31,3 @@ jobs:
                 echo "Unexpected response: $RESPONSE"
                 exit 1
             fi
-
