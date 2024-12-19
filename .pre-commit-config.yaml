@@ -1,5 +1,53 @@
 ---
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Git style
+      - id: check-added-large-files
+      - id: check-vcs-permalinks
+      - id: forbid-new-submodules
+      # - id: no-commit-to-branch
+      # Common errors
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+        exclude: CHANGELOG.md
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-executables-have-shebangs
+
+      # Cross platform
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+      # Security
+      - id: detect-aws-credentials
+        args: ['--allow-missing-credentials']
+      - id: detect-private-key
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.17.0  # Use the latest version
+    hooks:
+      - id: eslint
+        files: \src\*.js$                   # Apply to JavaScript files only
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0  # Use the latest version available
+    hooks:
+      - id: codespell
+        args:
+          - --skip=.git,__pycache__
+          - --ignore-words=./codespell_ignore_words.txt
+          - --quiet-level=2
+
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0  # Use the latest version
+    hooks:
+      - id: hadolint
+        files: Dockerfile              # Lint Dockerfiles for best practices
+
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.96.2
     hooks:
