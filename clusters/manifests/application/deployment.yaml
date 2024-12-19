@@ -21,7 +21,7 @@ spec:
       serviceAccountName: microservice-sa  # Attach the ServiceAccount to the pod - Needs to match terraform k8s-microservice-deployment.tf
       containers:
         - name: microservice
-          image: acrautomaticfortnight.azurecr.io/microservice:latest
+          image: acrautomaticfortnight.azurecr.io/microservice:11eb470c71320aa471b6f6f8cca2f97434720a46
           ports:
             - containerPort: 3000
 
