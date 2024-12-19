@@ -31,19 +31,20 @@ module "kubernetes_baseline" {
   depends_on          = [module.main]
 }
 
-module "application" {
-  source                   = "./modules/kubernetes-application-configuration"
-  dns_hosted_zone_name     = data.azurerm_dns_zone.environment.name
-  flux_git_repository_url  = "ssh://git@github.com/juanballone/verbose-fortnight"
-  flux_git_ssh_private_key = data.terraform_remote_state.runners.outputs.public_repository_deploy_key
-  identity_client_id       = module.main.kubelet_identity_client_id
-  namespace                = "application"
-  path                     = "./clusters/manifests/application"
-  resource_group_name      = data.azurerm_dns_zone.environment.resource_group_name
-  subscription_id          = data.azurerm_client_config.current.subscription_id
+# TODO: disable to allow terraform workflow run
+# module "application" {
+#   source                   = "./modules/kubernetes-application-configuration"
+#   dns_hosted_zone_name     = data.azurerm_dns_zone.environment.name
+#   flux_git_repository_url  = "ssh://git@github.com/juanballone/verbose-fortnight"
+#   flux_git_ssh_private_key = data.terraform_remote_state.runners.outputs.public_repository_deploy_key
+#   identity_client_id       = module.main.kubelet_identity_client_id
+#   namespace                = "application"
+#   path                     = "./clusters/manifests/application"
+#   resource_group_name      = data.azurerm_dns_zone.environment.resource_group_name
+#   subscription_id          = data.azurerm_client_config.current.subscription_id
 
-  depends_on = [
-    module.main,
-    module.kubernetes_baseline
-  ]
-}
+#   depends_on = [
+#     module.main,
+#     module.kubernetes_baseline
+#   ]
+# }
