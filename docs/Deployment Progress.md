@@ -7,7 +7,7 @@ This document outlines the deployment process of an Azure Kubernetes Cluster usi
 Before proceeding, ensure you have reviewed the document [**Cloud Prerequisites for Azure Deployment**](Cloud%20Prerequisites%20for%20Azure%20Deployment.md), as it contains key elements necessary for a successful setup.
 
 ## Azure Kubernetes Cluster Creation
-This section describes the creation of the Azure Kubernetes Cluster using Terraform. 
+This section describes the creation of the Azure Kubernetes Cluster using Terraform.
 
 ### Prerequisites
 - Ensure the GitHub Actions runner is registered and operational.
@@ -84,11 +84,17 @@ Testing is essential to validate the successful deployment of the application.
 - **Enhance Documentation:**
   - Add detailed descriptions of the Kubernetes components (Flux, Cert-Manager, External-DNS, NGINX).
   - Include configuration examples for these components.
+  - Produce Architecture diagram.
 - **Expand Testing:**
   - Automate end-to-end testing of the application and infrastructure.
+- **Spike Monitoring & Scaling:**
+  - Implement monitoring solutions to detect and analyze traffic spikes.
+  - Configure auto-scaling for the cluster and application pods to handle traffic surges effectively while maintaining optimal performance and cost-efficiency.
+- **Spike Security:**
+  - Look into Dependabot for dependency scanning.
+  - Add Checks as part of CI and pre-commit.
 
 ## References
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Terraform Documentation](https://registry.terraform.io/)
 - [Kubernetes Documentation](https://kubernetes.io/)
-
