@@ -70,6 +70,9 @@ To set up a CI/CD pipeline for deploying on Azure, the following prerequisites m
   2. Go to **Settings** > **Secrets and variables** > **Actions**.
   3. Add the above secrets one by one.
 
+![Setting Secrets](img/github-actions-add-secrets.png)
+
+
 ## 6. **Deploy and Create a Self-Hosted Runner on Azure**
 - **Purpose**: To run the CI/CD pipeline jobs on a self-hosted GitHub Actions runner deployed on Azure.
 - **Steps**:
@@ -84,6 +87,11 @@ To set up a CI/CD pipeline for deploying on Azure, the following prerequisites m
   4. Configure the runner to connect to your GitHub repository.
   5. Take a look at [clout-init-config.yaml](files/clout-init-config.yaml), it is important to install all dependencies.
 
+![Registering a Runner](img/github-actions-runner-registration.png)
+
 - **Notes**:
   - Ensure the VM has network access to Azure resources and GitHub.
   - Use a managed identity for secure authentication if possible.
+
+## References
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
