@@ -16,7 +16,6 @@
 - [Getting Started](#getting-started)
 - [Features](#features)
 - [Directory Structure](#directory-structure)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Getting Started
@@ -51,7 +50,7 @@ verbose-fortnight/
 └── LICENSE                 # License information
 ```
 
-## Directory Descriptions
+### Directory Descriptions
 
 This repository is organized into the following key directories. Each directory contains its own README.md file with detailed information:
 
