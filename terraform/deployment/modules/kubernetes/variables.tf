@@ -26,7 +26,7 @@ variable "enable_vm" {
 
 variable "enable_azure_monitoring" {
   default     = false
-  description = "Is Azure monitoring for the AKS cluster required."
+  description = "Is Azure monitoring for the Azure Kubernetes Service Cluster required."
   type        = bool
 }
 
@@ -46,12 +46,12 @@ variable "runners_virtual_network_name" {
 }
 
 variable "aks_private_dns_zone_id" {
-  description = "The Resource ID of the Private DNS Zone for AKS."
+  description = "The Resource ID of the Private DNS Zone for Azure Kubernetes Service."
   type        = string
 }
 
 variable "aks_private_dns_zone_name" {
-  description = "The Name of the Private DNS Zone for AKS. This is for Kube API."
+  description = "The Name of the Private DNS Zone for Azure Kubernetes Service. This is for Kube API."
   type        = string
 }
 

@@ -12,7 +12,7 @@ on:
     paths:
       - src/*
       - .github/workflows/docker.yaml
-      
+
 jobs:
   build-test:
     runs-on: self-hosted
@@ -61,7 +61,7 @@ jobs:
                 echo "Unexpected response: $RESPONSE"
                 exit 1
             fi
-        
+
       - name: Stop and Remove Container
         if: always()
         run: |

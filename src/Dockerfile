@@ -28,8 +28,13 @@ FROM node:current-slim
 # Set a non-root user for security
 RUN useradd --create-home --shell /bin/bash appuser
 
-# Install curl for Dcoker healthcheck
-RUN apt-get update && apt-get install -y curl
+# Install curl for Docker healthcheck
+RUN apt-get update \
+        && apt-get -y --no-install-recommends \
+        install curl=7.88.1-10+deb12u8 && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl --version
 
 # Set the working directory
 WORKDIR /usr/src/app

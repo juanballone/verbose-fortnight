@@ -29,7 +29,7 @@ variable "flux_git_repository_metadata_name" {
 }
 
 variable "flux_git_ssh_private_key" {
-  description = "The Repository Private Key for Flux to use on the AKS cluster for syncing repository manifests."
+  description = "The Repository Private Key for Flux to use on the Azure Kubernetes Service Cluster for syncing repository manifests."
   sensitive   = true
   type        = string
 }
