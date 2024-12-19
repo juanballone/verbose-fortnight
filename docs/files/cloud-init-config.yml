@@ -1,0 +1,68 @@
+#cloud-config
+
+package_reboot_if_required: true
+package_update: true
+package_upgrade: true
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - unzip
+  - gnupg
+  - acl  # For setting default ACLs
+
+runcmd:
+  # 1. Create the user for GitHub Actions
+  - useradd -m -s /bin/bash actions
+  - echo 'actions ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/actions
+
+  # 2. Create and verify the /actions-runner directory
+  - mkdir -p /actions-runner
+  - chown actions:actions /actions-runner
+  - chmod g+s /actions-runner
+  - setfacl -d -m u:actions:rwx /actions-runner
+  - setfacl -d -m g:actions:rwx /actions-runner
+
+  # 3. Fetch the latest GitHub Actions runner release dynamically
+  - cd /actions-runner
+  - LATEST_URL=$(curl -s https://api.github.com/repos/actions/runner/releases/latest | grep "browser_download_url" | grep "actions-runner-linux-x64" | cut -d '"' -f 4)
+  - curl -o actions-runner-linux-x64.tar.gz -L $LATEST_URL
+  - tar xzf actions-runner-linux-x64.tar.gz
+  - chown actions:actions -R /actions-runner
+
+  # 4. Configure the runner with the token
+  - echo {{GITHUB_TOKEN}} >> /var/tmp/github_token
+  - ./config.sh --url https://github.com/juanballone/automatic-fortnight-deployment --token {{GITHUB_TOKEN}}
+  - ./svc.sh install actions;
+  - ./svc.sh start;
+
+  # 5. Install Azure CLI
+  - curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+  # 6. Install Terraform
+  - curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  - echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+  - sudo apt update && sudo apt install -y terraform
+
+  # 7. Install kubectl
+  - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  - sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+  # 8. Install Node
+  - curl -fsSL https://deb.nodesource.com/setup_23.x | sudo -E bash -
+  - sudo apt-get install -y nodejs
+  # 9. Install Docker
+  - sudo mkdir -m 0755 -p /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - sudo apt-get update
+  - sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  - sudo usermod -aG docker $USER
+  - sudo systemctl start docker
+
+  # 8. Verify installations
+  - terraform --version
+  - az version
+  - kubectl version --client
+  - unzip --help
