@@ -5,13 +5,15 @@ on:
       branches:
         - main
       paths:
-        - terraform/*
+        - terraform/deployment/*
+        - terraform/deployment/modules/*
         - .github/workflows/terraform.yaml
     push:
       branches:
         - main
       paths:
-        - terraform/*
+        - terraform/deployment/*
+        - terraform/deployment/modules/*
         - .github/workflows/terraform.yaml
     workflow_dispatch:
 
